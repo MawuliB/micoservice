@@ -19,8 +19,7 @@ public class Book {
 
     private String title;
 
-    @Convert(converter = AuthorConverter.class)
-    private Author author;
+    private String authorId;
 
     private String genreId;
 

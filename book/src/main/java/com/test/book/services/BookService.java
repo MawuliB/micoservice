@@ -17,8 +17,6 @@ public class BookService {
 
     private final BookRepository bookRepository;
 
-    private final String uploadDir = "uploads/";
-
     public Book createBook(Book book, MultipartFile imageFile) throws IOException {
         if (imageFile != null && !imageFile.isEmpty()) {
             String imagePath = saveImage(imageFile);
@@ -29,6 +27,7 @@ public class BookService {
 
     private String saveImage(MultipartFile imageFile) throws IOException {
         String fileName = imageFile.getOriginalFilename();
+        String uploadDir = "uploads/";
         Path filePath = Paths.get(uploadDir, fileName);
         Files.createDirectories(filePath.getParent());
         Files.write(filePath, imageFile.getBytes());
@@ -39,12 +38,16 @@ public class BookService {
         return bookRepository.findById(id).orElse(null);
     }
 
+    public Iterable<Book> findByAuthorId(String authorId) {
+        return bookRepository.findAllByAuthorId(authorId);
+    }
+
     public Book updateBook(Book book, Long id) {
         book.setId(id);
         return bookRepository.save(book);
     }
 
-    public Book partialUpdateBook(Book book, Long id){
+    public Book partialUpdateBook(Book book, Long id) {
         Book existingBook = bookRepository.findById(id).orElse(null);
         if (existingBook == null) {
             return null;
@@ -52,8 +55,8 @@ public class BookService {
         if (book.getTitle() != null) {
             existingBook.setTitle(book.getTitle());
         }
-        if (book.getAuthor() != null) {
-            existingBook.setAuthor(book.getAuthor());
+        if (book.getAuthorId() != null) {
+            existingBook.setAuthorId(book.getAuthorId());
         }
         if (book.getGenreId() != null) {
             existingBook.setGenreId(book.getGenreId());

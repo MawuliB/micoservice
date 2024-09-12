@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: api-gateway
+
+  config:
+    import: optional:configserver:http://localhost:8888
+
+  cloud:
+    gateway:
+      mvc:
+        routes:
+          - id: book
+            uri: lb://book
+            predicates:
+              - Path=/books/**
+          - id: author
+            uri: lb://author
+            predicates:
+              - Path=/authors/**
+
+server:
+  port: 8060
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
